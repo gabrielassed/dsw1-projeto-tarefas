@@ -1,0 +1,35 @@
+name: Deploy para GitHub Pages
+
+on:
+  push:
+    branches:
+      - main  # ou 'master', conforme sua branch principal
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clonar o repositório
+        uses: actions/checkout@v3
+
+      - name: Instalar Node.js com pnpm
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'pnpm'
+
+      - name: Instalar o pnpm
+        run: npm install -g pnpm
+
+      - name: Instalar dependências
+        run: pnpm install
+
+      - name: Build do projeto
+        run: pnpm run build
+
+      - name: Deploy para o GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
